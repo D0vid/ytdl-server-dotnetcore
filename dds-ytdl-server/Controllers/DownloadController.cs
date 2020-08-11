@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using YoutubeExplode;
-using YoutubeExplode.Models.MediaStreams;
+using YoutubeExplode.Videos.Streams;
 
 namespace dds_ytdl_server.Controllers
 {
@@ -14,12 +14,13 @@ namespace dds_ytdl_server.Controllers
         public async Task<IActionResult> Download(string id)
         {
             var client = new YoutubeClient();
-            var streamInfoSet = client.GetVideoMediaStreamInfosAsync(id).Result;
-            var title = client.GetVideoAsync(id).Result.Title;
-            var streamInfo = streamInfoSet.Audio.WithHighestBitrate();
-            var inputStream = new MemoryStream();
-            await client.DownloadMediaStreamAsync(streamInfo, inputStream);
-            return File(inputStream.GetBuffer(), "application/force-download", $"{title}.mp3");
+            var streamManifest = await client.Videos.Streams.GetManifestAsync(id);
+            var title = client.Videos.GetAsync(id).Result.Title;
+            var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
+            var inputStream = await client.Videos.Streams.GetAsync(streamInfo);
+            var memStream = new MemoryStream();
+            inputStream.CopyTo(memStream);
+            return File(memStream.GetBuffer(), "application/force-download", $"{title}.mp3");
         }
     }
 }

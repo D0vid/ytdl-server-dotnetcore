@@ -11,7 +11,7 @@ namespace dds_ytdl_server.Controllers
         public string GetToken(string token)
         {
             var client = new YoutubeClient();
-            var result = client.SearchVideosAsync(token, 1).Result;
+            var result = client.Search.GetVideosAsync(token,0,1).BufferAsync().Result;
             return JsonConvert.SerializeObject(result);
         }
 
@@ -19,7 +19,7 @@ namespace dds_ytdl_server.Controllers
         public string GetVideo(string token)
         {
             var client = new YoutubeClient();
-            var result = client.GetVideoAsync(token).Result;
+            var result = client.Videos.GetAsync(token).Result;
             return JsonConvert.SerializeObject(result);
         }
 
@@ -27,7 +27,7 @@ namespace dds_ytdl_server.Controllers
         public string GetPlayList(string token)
         {
             var client = new YoutubeClient();
-            var result = client.GetPlaylistAsync(token).Result.Videos;
+            var result = client.Playlists.GetVideosAsync(token).BufferAsync().Result;
             return JsonConvert.SerializeObject(result);
         }
     }
