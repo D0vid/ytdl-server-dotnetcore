@@ -24,7 +24,7 @@ namespace dds_ytdl_server.Controllers
             var mediaStreamInfos = new IStreamInfo[] { streamInfo };
             await converter.DownloadAndProcessMediaStreamsAsync(mediaStreamInfos, path, "mp3");
             byte[] buff = System.IO.File.ReadAllBytes(path);
-            System.IO.File.Delete(path);
+            System.IO.File.Delete(path); 
             return File(buff, "application/force-download", $"{title}.mp3");
         }
     }
