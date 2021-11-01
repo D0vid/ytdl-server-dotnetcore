@@ -16,13 +16,9 @@ namespace dds_ytdl_server.Controllers
         public async Task<IActionResult> Download(string id)
         {
             var client = new YoutubeClient();
-            var converter = new YoutubeConverter(client);
-            var streamManifest = await client.Videos.Streams.GetManifestAsync(id);
             var title = client.Videos.GetAsync(id).Result.Title;
             string path = $"{id}.mp3";
-            var streamInfo = streamManifest.GetAudioOnly().WithHighestBitrate();
-            var mediaStreamInfos = new IStreamInfo[] { streamInfo };
-            await converter.DownloadAndProcessMediaStreamsAsync(mediaStreamInfos, path, "mp3");
+            await client.Videos.DownloadAsync("https://youtube.com/watch?v="+id, path);
             byte[] buff = System.IO.File.ReadAllBytes(path);
             System.IO.File.Delete(path); 
             return File(buff, "application/force-download", $"{title}.mp3"); 

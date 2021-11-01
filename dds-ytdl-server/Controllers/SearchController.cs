@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Linq;
 using YoutubeExplode;
 
 namespace dds_ytdl_server.Controllers
@@ -11,7 +12,7 @@ namespace dds_ytdl_server.Controllers
         public string GetToken(string token)
         {
             var client = new YoutubeClient();
-            var result = client.Search.GetVideosAsync(token,0,1).BufferAsync().Result;
+            var result = client.Search.GetVideosAsync(token).ToListAsync();
             return JsonConvert.SerializeObject(result);
         }
 
@@ -27,7 +28,7 @@ namespace dds_ytdl_server.Controllers
         public string GetPlayList(string token)
         {
             var client = new YoutubeClient();
-            var result = client.Playlists.GetVideosAsync(token).BufferAsync().Result;
+            var result = client.Playlists.GetVideosAsync(token).ToListAsync();
             return JsonConvert.SerializeObject(result);
         }
     }
